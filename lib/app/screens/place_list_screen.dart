@@ -7,39 +7,53 @@ class PlacesListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Places'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed(AddPlaceScreen.routeName);
-            },
-          )
-        ],
-      ),
-      body: true
-          ? Consumer<GreatPlaces>(
-              child: Center(
-                  child: Text('No place here! Start to add some place!')),
-              builder: (ctx, gratePlace, ch) => gratePlace.items.length <= 0
-                  ? ch
-                  : ListView.builder(
-                      itemCount: gratePlace.items.length,
-                      itemBuilder: (ctx, index) {
-                        return ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                FileImage(gratePlace.items[index].image),
-                          ),
-                          title: Text(gratePlace.items[index].title),
-                          onTap: () {
-                            //go to details
-                          },
-                        );
-                      }),
+        appBar: AppBar(
+          title: Text('Places'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).pushNamed(AddPlaceScreen.routeName);
+              },
             )
-          : Center(child: CircularProgressIndicator()),
-    );
+          ],
+        ),
+        body: FutureBuilder(
+          future:
+              Provider.of<GreatPlaces>(context, listen: false).fetchPlaces(),
+          builder: (BuildContext context, snapshot) => snapshot
+                      .connectionState ==
+                  ConnectionState.waiting
+              ? Center(child: CircularProgressIndicator())
+              : Consumer<GreatPlaces>(
+                  child: Center(
+                      child: Text('No place here! Start to add some place!')),
+                  builder: (ctx, gratePlace, ch) => gratePlace.items.length <= 0
+                      ? ch
+                      : ListView.builder(
+                          itemCount: gratePlace.items.length,
+                          itemBuilder: (ctx, index) {
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    FileImage(gratePlace.items[index].image),
+                              ),
+                              title: Text(gratePlace.items[index].title),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  Provider.of<GreatPlaces>(context,
+                                          listen: false)
+                                      .delete(gratePlace.items[index].id);
+                                },
+                                icon: Icon(Icons.delete,
+                                    color: Theme.of(context).errorColor),
+                              ),
+                              onTap: () {
+                                //go to details
+                              },
+                            );
+                          }),
+                ),
+        ));
   }
 }

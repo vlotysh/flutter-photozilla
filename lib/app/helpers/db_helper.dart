@@ -1,0 +1,33 @@
+import 'package:path/path.dart' as path;
+import 'package:sqflite/sqflite.dart' as sql;
+
+class DBHelper {
+  static Future<sql.Database> database() async {
+    final dbPath = await sql.getDatabasesPath();
+    final dbName = path.basename(dbPath);
+    return sql.openDatabase(dbName, onCreate: (db, version) {
+      return db.execute('CREATE TABLE  user_places ('
+          'id TEXT PRIMARY KEY, '
+          'title TEXT,'
+          'image TEXT'
+          ')');
+    }, version: 1);
+  }
+
+  static Future<void> insert(String table, Map<String, dynamic> data) async {
+    final sql.Database sqlDB = await DBHelper.database();
+
+    await sqlDB.insert(table, data,
+        conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  }
+
+  static Future<List<Map<String, dynamic>>> getData(String table) async {
+    final sql.Database sqlDB = await DBHelper.database();
+    return sqlDB.query(table);
+  }
+
+  static Future<int> delete(String table, String id) async {
+    final sql.Database sqlDB = await DBHelper.database();
+    return sqlDB.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+}
