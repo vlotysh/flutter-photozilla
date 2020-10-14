@@ -47,5 +47,9 @@
     <string>Needs camera for getting place</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Needs camera for getting place</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Needs to get location</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Needs to get location</string>
 </dict>
 </plist>
