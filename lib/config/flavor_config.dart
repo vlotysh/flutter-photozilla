@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 enum Flavor { DEV, QA, PRODUCTION }
 
 class FlavorValues {
-  final String baseStorageUrl;
-  final String fireBaseApiKey;
+  final String mapApiKey;
 
-  FlavorValues({@required this.baseStorageUrl, @required this.fireBaseApiKey});
+  FlavorValues({@required this.mapApiKey});
 }
 
 class FlavorConfig {

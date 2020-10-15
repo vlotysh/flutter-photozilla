@@ -10,7 +10,6 @@ void main() {
       color: Colors.purple,
       values: FlavorValues(
           //https://meaium.com/flutter-community/flutter-ready-to-go-e59873f9d7de#c38c
-          fireBaseApiKey: EnvConfig.FIREBASE_API_KEY,
-          baseStorageUrl: EnvConfig.BASE_STORAGE_URL));
+          mapApiKey: EnvConfig.MAP_API_KEY));
   runApp(PhotoZilla());
 }
