@@ -51,5 +51,7 @@
     <string>Needs to get location</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Needs to get location</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
 </dict>
 </plist>

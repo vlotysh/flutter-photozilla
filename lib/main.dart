@@ -9,7 +9,7 @@ void main() {
       flavor: Flavor.DEV,
       color: Colors.purple,
       values: FlavorValues(
-          //https://meaium.com/flutter-community/flutter-ready-to-go-e59873f9d7de#c38c
+          //https://medium.com/flutter-community/flutter-ready-to-go-e59873f9d7de#c38c
           mapApiKey: EnvConfig.MAP_API_KEY));
   runApp(PhotoZilla());
 }
