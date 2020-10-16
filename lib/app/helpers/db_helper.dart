@@ -27,7 +27,7 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     final sql.Database sqlDB = await DBHelper.database();
-    return sqlDB.query(table);
+    return sqlDB.query(table, orderBy: 'id DESC');
   }
 
   static Future<int> delete(String table, String id) async {

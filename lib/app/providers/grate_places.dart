@@ -28,7 +28,7 @@ class GreatPlaces with ChangeNotifier {
           address: address),
     );
 
-    _items.add(newPlace);
+    _items.insert(0, newPlace);
     notifyListeners();
     DBHelper.insert('user_places', {
       'id': newPlace.id,
