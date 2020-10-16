@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photozilla/app/providers/grate_places.dart';
 import 'package:photozilla/app/screens/add_place_screen.dart';
+import 'package:photozilla/app/screens/place_details_screen.dart';
 import 'package:provider/provider.dart';
 
 class PlacesListScreen extends StatelessWidget {
@@ -39,6 +40,8 @@ class PlacesListScreen extends StatelessWidget {
                                     FileImage(gratePlace.items[index].image),
                               ),
                               title: Text(gratePlace.items[index].title),
+                              subtitle: Text(
+                                  gratePlace.items[index].location.address),
                               trailing: IconButton(
                                 onPressed: () {
                                   Provider.of<GreatPlaces>(context,
@@ -49,7 +52,11 @@ class PlacesListScreen extends StatelessWidget {
                                     color: Theme.of(context).errorColor),
                               ),
                               onTap: () {
+                                print('TAP!');
                                 //go to details
+                                Navigator.of(context).pushNamed(
+                                    PlaceDetailsScreen.routeName,
+                                    arguments: gratePlace.items[index].id);
                               },
                             );
                           }),

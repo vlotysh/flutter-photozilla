@@ -5,6 +5,10 @@ import 'package:photozilla/app/helpers/location_helper.dart';
 import 'package:photozilla/app/screens/map_screen.dart';
 
 class LocationInput extends StatefulWidget {
+  final Function onSelectPlace;
+
+  LocationInput(this.onSelectPlace);
+
   @override
   _LocationInputState createState() => _LocationInputState();
 }
@@ -14,17 +18,22 @@ class _LocationInputState extends State<LocationInput> {
   LocationData _locationData;
 
   Future<void> _getCurrentUserLocation() async {
-    final locData = await Location().getLocation();
-
-    setState(() {
-      _locationData = locData;
-      _renderMapImage(
-          latitude: _locationData.latitude, longitude: _locationData.longitude);
-    });
+    try {
+      final locData = await Location().getLocation();
+      setState(() {
+        _locationData = locData;
+        _previewImageUrl = _renderMapImage(
+            latitude: _locationData.latitude,
+            longitude: _locationData.longitude);
+      });
+      widget.onSelectPlace(_locationData.latitude, _locationData.longitude);
+    } catch (error) {
+      return;
+    }
   }
 
-  void _renderMapImage({double latitude, double longitude}) {
-    _previewImageUrl = LocationHelper.generateLocationPreviewImage(
+  String _renderMapImage({double latitude, double longitude}) {
+    return LocationHelper.generateLocationPreviewImage(
         latitude: latitude, longitude: longitude);
   }
 
@@ -71,10 +80,12 @@ class _LocationInputState extends State<LocationInput> {
 
     setState(() {
       //   selectedLocation.longitude, selectedLocation.latitude
-      _renderMapImage(
+      _previewImageUrl = _renderMapImage(
           latitude: selectedLocation.latitude,
           longitude: selectedLocation.longitude);
     });
+
+    widget.onSelectPlace(selectedLocation.latitude, selectedLocation.longitude);
   }
 
   @override

@@ -6,10 +6,14 @@ class DBHelper {
     final dbPath = await sql.getDatabasesPath();
     final dbName = path.basename(dbPath);
     return sql.openDatabase(dbName, onCreate: (db, version) {
+      print('INIT DB');
       return db.execute('CREATE TABLE  user_places ('
           'id TEXT PRIMARY KEY, '
           'title TEXT,'
-          'image TEXT'
+          'image TEXT, '
+          'loc_lat REAL,'
+          'loc_lng REAL, '
+          'address TEXT'
           ')');
     }, version: 1);
   }

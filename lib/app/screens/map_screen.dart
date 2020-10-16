@@ -42,6 +42,13 @@ class _MapScreenState extends State<MapScreen> {
       zoom: 14.4746,
     );
 
+    final mapMarker = _pickedLocation != null
+        ? _pickedLocation
+        : widget.initialLocation != null
+            ? LatLng(widget.initialLocation.latitude,
+                widget.initialLocation.longitude)
+            : null;
+
     return new Scaffold(
       appBar: AppBar(
         title: Text('Map'),
@@ -62,25 +69,34 @@ class _MapScreenState extends State<MapScreen> {
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
-          markers: _pickedLocation == null
+          markers: mapMarker == null
               ? null
-              : {Marker(markerId: MarkerId('m1'), position: _pickedLocation)}),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
+              : {Marker(markerId: MarkerId('m1'), position: mapMarker)}),
+      floatingActionButton:
+          widget.initialLocation != null || _pickedLocation != null
+              ? FloatingActionButton.extended(
+                  onPressed: _goToPlace,
+                  label: Text('Go to place!'),
+                  icon: Icon(Icons.center_focus_weak_sharp),
+                )
+              : null,
     );
   }
 
-  Future<void> _goToTheLake() async {
+  Future<void> _goToPlace() async {
+    final cameraTarget = _pickedLocation != null
+        ? _pickedLocation
+        : widget.initialLocation != null
+            ? LatLng(widget.initialLocation.latitude,
+                widget.initialLocation.longitude)
+            : null;
+
+    if (cameraTarget == null) {
+      return;
+    }
+
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        bearing: 192.8334901395799,
-        target: _pickedLocation == null
-            ? LatLng(37.43296265331129, -122.08832357078792)
-            : _pickedLocation,
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414)));
+        bearing: 0.0, target: cameraTarget, tilt: 0.0, zoom: 17.5)));
   }
 }
