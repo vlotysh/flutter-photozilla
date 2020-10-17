@@ -15,8 +15,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="photozilla"
         android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCQtTEjXt8mN4Svh-B8wmKCVjkbLwtZmwc"/>
+        <meta-data android:name="com.google.android.geo.API_KEY"  android:value="${googleMapsApi}"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
