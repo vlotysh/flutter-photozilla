@@ -9,8 +9,7 @@ class MapScreen extends StatefulWidget {
   final bool isSelecting;
   final PlaceLocation initialLocation;
 
-  MapScreen(
-      {this.initialLocation, this.isSelecting = false});
+  MapScreen({this.initialLocation, this.isSelecting = false});
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -34,15 +33,16 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final CameraPosition _initialCameraPosition = widget.initialLocation != null ? CameraPosition(
-      target: LatLng(
-          widget.initialLocation.latitude, widget.initialLocation.longitude),
-      zoom: 15,
-    ) : CameraPosition(
-      target: LatLng(
-          50.468305250060965, 30.456585623323917),
-      zoom: 15,
-    ) ;
+    final CameraPosition _initialCameraPosition = widget.initialLocation != null
+        ? CameraPosition(
+            target: LatLng(widget.initialLocation.latitude,
+                widget.initialLocation.longitude),
+            zoom: 15,
+          )
+        : CameraPosition(
+            target: LatLng(50.468305250060965, 30.456585623323917),
+            zoom: 15,
+          );
 
     final mapMarker = _pickedLocation != null
         ? _pickedLocation
@@ -64,16 +64,34 @@ class _MapScreenState extends State<MapScreen> {
                 })
         ],
       ),
-      body: GoogleMap(
-          mapType: MapType.normal,
-          onTap: widget.isSelecting ? _tapHandler : null,
-          initialCameraPosition: _initialCameraPosition,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          markers: mapMarker == null
-              ? null
-              : {Marker(markerId: MarkerId('m1'), position: mapMarker)}),
+      body: Stack(
+        children: [
+          GoogleMap(
+              mapType: MapType.normal,
+              onTap: widget.isSelecting ? _tapHandler : null,
+              initialCameraPosition: _initialCameraPosition,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              markers: mapMarker == null
+                  ? null
+                  : {Marker(markerId: MarkerId('m1'), position: mapMarker)}),
+          Positioned(
+              top: 10,
+              left: 10,
+              width: 200,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Enter a search term'),
+                ),
+              ))
+        ],
+      ),
       floatingActionButton:
           widget.initialLocation != null || _pickedLocation != null
               ? FloatingActionButton.extended(
