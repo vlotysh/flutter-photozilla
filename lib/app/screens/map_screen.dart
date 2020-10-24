@@ -25,7 +25,11 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController _controller;
+
+  void _onMapCreated(GoogleMapController controller) {
+    this._controller = controller;
+  }
 
   Future<CameraPosition> _cameraPositionBind() async {
     LatLng targetLatLng;
@@ -94,9 +98,7 @@ class _MapScreenState extends State<MapScreen> {
                   myLocationButtonEnabled: true,
                   onTap: widget.isSelecting ? _tapHandler : null,
                   initialCameraPosition: projectSnap.data,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
+                  onMapCreated: _onMapCreated,
                   markers: mapMarker == null
                       ? null
                       : {
@@ -132,7 +134,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _goToPlace() async {
-    final cameraTarget = _pickedLocation != null
+    final LatLng cameraTarget = _pickedLocation != null
         ? _pickedLocation
         : widget.initialLocation != null
             ? LatLng(widget.initialLocation.latitude,
@@ -143,8 +145,19 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
 
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        bearing: 0.0, target: cameraTarget, tilt: 0.0, zoom: 17.5)));
+    _controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          bearing: 0.0,
+          target: cameraTarget,
+          tilt: 0.0,
+          zoom: 17.0,
+        ),
+      ),
+    );
+
+//    final GoogleMapController controller = await _controller.future;
+    //   controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    // bearing: 0.0, target: cameraTarget, tilt: 0.0, zoom: 17.5)));
   }
 }
