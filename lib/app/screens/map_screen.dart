@@ -130,6 +130,7 @@ class _MapScreenState extends State<MapScreen> {
                   icon: Icon(Icons.center_focus_weak_sharp),
                 )
               : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
