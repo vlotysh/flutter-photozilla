@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:photozilla/app/models/place.dart';
 
 class MapScreen extends StatefulWidget {
@@ -25,25 +26,37 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Completer<GoogleMapController> _controller = Completer();
-  final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
 
-  @override
-  Widget build(BuildContext context) {
-    final CameraPosition _initialCameraPosition = widget.initialLocation != null
+  Future<CameraPosition> _cameraPositionBind() async {
+    CameraPosition cameraPos = widget.initialLocation != null
         ? CameraPosition(
             target: LatLng(widget.initialLocation.latitude,
                 widget.initialLocation.longitude),
             zoom: 15,
           )
-        : CameraPosition(
-            target: LatLng(50.468305250060965, 30.456585623323917),
-            zoom: 15,
-          );
+        : null;
 
+    if (cameraPos == null) {
+      final locData = await Location().getLocation();
+
+      cameraPos = CameraPosition(
+        target: LatLng(locData.latitude, locData.longitude),
+        zoom: 15,
+      );
+    }
+
+    return cameraPos;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _cameraPositionBind();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final mapMarker = _pickedLocation != null
         ? _pickedLocation
         : widget.initialLocation != null
@@ -66,16 +79,31 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: Stack(
         children: [
-          GoogleMap(
-              mapType: MapType.normal,
-              onTap: widget.isSelecting ? _tapHandler : null,
-              initialCameraPosition: _initialCameraPosition,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              markers: mapMarker == null
-                  ? null
-                  : {Marker(markerId: MarkerId('m1'), position: mapMarker)}),
+          FutureBuilder(
+            future: _cameraPositionBind(),
+            builder: (context, projectSnap) {
+              if (projectSnap.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return GoogleMap(
+                  mapType: MapType.normal,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  onTap: widget.isSelecting ? _tapHandler : null,
+                  initialCameraPosition: projectSnap.data,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  markers: mapMarker == null
+                      ? null
+                      : {
+                          Marker(markerId: MarkerId('m1'), position: mapMarker)
+                        });
+            },
+          ),
           Positioned(
               top: 10,
               left: 10,
