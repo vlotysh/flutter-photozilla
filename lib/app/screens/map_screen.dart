@@ -28,24 +28,24 @@ class _MapScreenState extends State<MapScreen> {
   Completer<GoogleMapController> _controller = Completer();
 
   Future<CameraPosition> _cameraPositionBind() async {
-    CameraPosition cameraPos = widget.initialLocation != null
-        ? CameraPosition(
-            target: LatLng(widget.initialLocation.latitude,
-                widget.initialLocation.longitude),
-            zoom: 15,
-          )
-        : null;
+    LatLng targetLatLng;
+    targetLatLng = widget.initialLocation != null
+        ? LatLng(
+            widget.initialLocation.latitude, widget.initialLocation.longitude)
+        : _pickedLocation != null
+            ? LatLng(_pickedLocation.latitude, _pickedLocation.longitude)
+            : null;
 
-    if (cameraPos == null) {
+    if (targetLatLng == null) {
       final locData = await Location().getLocation();
 
-      cameraPos = CameraPosition(
-        target: LatLng(locData.latitude, locData.longitude),
-        zoom: 15,
-      );
+      targetLatLng = LatLng(locData.latitude, locData.longitude);
     }
 
-    return cameraPos;
+    return CameraPosition(
+      target: targetLatLng,
+      zoom: 15,
+    );
   }
 
   @override
