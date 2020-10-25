@@ -36,9 +36,7 @@ class _MapScreenState extends State<MapScreen> {
     targetLatLng = widget.initialLocation != null
         ? LatLng(
             widget.initialLocation.latitude, widget.initialLocation.longitude)
-        : _pickedLocation != null
-            ? LatLng(_pickedLocation.latitude, _pickedLocation.longitude)
-            : null;
+        : null;
 
     if (targetLatLng == null) {
       final locData = await Location().getLocation();
